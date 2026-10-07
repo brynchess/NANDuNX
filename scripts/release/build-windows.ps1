@@ -28,7 +28,9 @@ function Read-Version {
 }
 
 $version = $Tag.Substring(1)
-$cargoVersion = ([regex]::Match((Get-Content -Raw -LiteralPath 'Cargo.toml'), '(?m)^version = "([^"]+)"$')).Groups[1].Value
+# Git's Windows checkout may use CRLF, so accept whitespace before the line
+# ending rather than requiring an LF-only TOML line.
+$cargoVersion = ([regex]::Match((Get-Content -Raw -LiteralPath 'Cargo.toml'), '(?m)^\s*version\s*=\s*"([^"]+)"\s*$')).Groups[1].Value
 $packageVersion = Read-Version 'package.json'
 $tauriVersion = Read-Version 'src-tauri/tauri.conf.json'
 
