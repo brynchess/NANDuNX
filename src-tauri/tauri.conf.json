@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "NANDuNX",
-  "version": "0.1.2",
-  "identifier": "io.github.nandunx.nand-upgrader",
+  "version": "0.2.0",
+  "identifier": "io.github.brynchess.nandunx",
   "build": {
     "beforeDevCommand": "npm run dev:web",
     "beforeBuildCommand": "npm run build:web",

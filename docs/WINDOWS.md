@@ -53,17 +53,17 @@ Win32 API references: [volume extents](https://learn.microsoft.com/en-us/windows
 
 ## Automated builds on GitHub and Gitea
 
-Build natively on Windows x64. A shared `scripts/release/build-windows.ps1` is planned to accept a tag, validate Cargo/npm/Tauri versions, run `npm ci`, `npm run build`, `cargo fmt --check`, `cargo test --workspace --locked`, and Tauri NSIS packaging, then normalize artifact names and compute SHA-256. It must check native process exit codes but publish nothing itself. Keep Linux `build-artifacts.sh` and share version validation instead of duplicating rules.
+Build natively on Windows x64. `scripts/release/build-windows.ps1` accepts a tag, validates Cargo/npm/Tauri versions, runs `npm ci`, `npm run build`, `cargo fmt --check`, `cargo test --workspace --locked`, and Tauri NSIS packaging, then normalizes the installer name and computes SHA-256. It checks native process exit codes but publishes nothing itself. GitHub Actions uses the hosted `windows-2022` runner and a final publisher combines its output with Linux assets. Keep Linux `build-artifacts.sh` and share version validation instead of duplicating rules.
 
 Planned assets are `nandunx-<version>-windows-x86_64-setup.exe` and one `SHA256SUMS` spanning Windows and the three existing Linux archives. Windows gets no Web/headless package; MSI remains outside the first release. A Tauri Windows platform override should keep Linux `deb`. Installer tests must include a machine lacking WebView2 runtime. See [Tauri Windows installer](https://v2.tauri.app/distribute/windows-installer/) and [build prerequisites](https://v2.tauri.app/start/prerequisites/).
 
 | Element | GitHub Actions | Gitea Actions |
 | --- | --- | --- |
-| Windows runner | Dedicated self-hosted `[self-hosted, Windows, X64, nandunx-release-windows]` | Native Windows runner labeled `nandunx-release-windows:host`; job `runs-on: nandunx-release-windows` |
+| Windows runner | Hosted `windows-2022` | Native Windows runner labeled `nandunx-release-windows:host`; job `runs-on: nandunx-release-windows` |
 | Shell | Explicit `pwsh` | Explicit `pwsh` after PowerShell 7 install and runner-version test |
 | Build | Shared `build-windows.ps1` | Shared `build-windows.ps1` |
 | Unpublished tests | Trusted changes and manual builds | Trusted changes and manual builds |
-| Release | Tag, Linux/Windows builds, one artifact publisher with `contents: write` | Tag, Linux/Windows builds, one publisher with release permission |
+| Release | Tag, Linux/Windows builds, one artifact publisher with `contents: write` | Linux-only tag release until its Windows workflow is added and tested |
 
 Gitea has Windows runners, but default shell and external Actions compatibility must be tested on the particular instance: [Windows FAQ](https://docs.gitea.com/1.25/usage/actions/faq/) and [host mode/labels](https://docs.gitea.com/1.25/usage/actions/act-runner/). GitHub documents its own [runner registration](https://docs.github.com/en/actions/how-tos/manage-runners/self-hosted-runners/add-runners). These are separate processes and registrations, not one shared token. Prefer two reproducible VMs from the same image. If sharing a host, use separate accounts, directories, caches, and a global build lock; one service's `concurrency` setting cannot protect against the other.
 

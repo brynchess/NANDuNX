@@ -1,16 +1,15 @@
 # Release automation and runner requirements
 
-Windows release automation is planned, not active. The existing workflows
-below still build Linux assets only. The proposed Windows design uses a shared
-PowerShell build script, native self-hosted Windows runners registered
-separately with GitHub and Gitea, and one publisher per service that combines
-Linux/Windows assets and checksums after both builds succeed.
+GitHub release automation builds Linux and Windows assets natively, then uses
+one publisher job to create the release only after both builds succeed. The
+shared PowerShell build script validates versions, builds the NSIS installer,
+and publishes nothing itself.
 Windows assets contain the GUI installer only; Web/headless and Docker assets
 remain Linux-only. Runner labels, prerequisites, isolation, signing and Gitea
 compatibility checks are described
 in [WINDOWS.md](WINDOWS.md); delivery status is in
-[ROADMAP.md](../ROADMAP.md). Do not add a Windows release asset until its
-implementation and hardware-test gates have passed.
+[ROADMAP.md](../ROADMAP.md). Windows installer signing and broader hardware
+acceptance remain release gates; the current installer is explicitly unsigned.
 
 For the internal W5 GUI trial, Gitea runs `windows-w5-build.yml` on the
 `windows` branch and tag `v0.1.1`. Earlier unsigned debug test archives
@@ -27,11 +26,18 @@ workflow builds the frontend into the EXE and tests that `index.html` is
 embedded. The immutable `v0.1.1` tag remains at its original commit; use the
 newer branch artifact for the GUI trial.
 
-Pushing an annotated tag matching `vX.Y.Z` starts both workflows:
+Pushing an annotated tag matching `vX.Y.Z` to GitHub starts the release
+workflow:
 
-- GitHub: `.github/workflows/release.yml` on the hosted Ubuntu 22.04 runner;
-- Gitea: `.gitea/workflows/release.yml` on the dedicated
-  `nandunx-release-linux` runner label.
+- Linux assets are built on a hosted Ubuntu 22.04 runner;
+- the NSIS installer is built on a hosted `windows-2022` runner;
+- a final Ubuntu publisher downloads both artifact sets, recreates one
+  `SHA256SUMS`, and creates or updates the GitHub Release with the repository
+  `GITHUB_TOKEN` limited to `contents: write`.
+
+GitHub automatically attaches `Source code (zip)` and `Source code (tar.gz)`
+for the tag. Pushing the tag to Gitea remains optional and currently runs its
+separate Linux-only workflow.
 
 The tag must exactly match the version in root `Cargo.toml`, `package.json`
 and `src-tauri/tauri.conf.json`. The shared build script rejects a mismatch
@@ -40,15 +46,16 @@ before it creates an asset. A successful release contains:
 | Asset | Contents |
 | --- | --- |
 | `nandunx_<version>_amd64.deb` | Desktop Tauri package for Debian/Ubuntu amd64 |
+| `nandunx-<version>-windows-x86_64-setup.exe` | Unsigned NSIS installer for Windows x64 |
 | `nandunx-web-<version>-linux-x86_64.tar.gz` | Headless `nandunx-web`, compiled frontend, systemd unit and installer |
 | `nandunx-docker-<version>-linux-x86_64.tar.gz` | Saved Docker image, Compose, `.env.example`, Dockerfile and `README-TRUENAS.md` |
-| `SHA256SUMS` | SHA-256 checksums for the three assets |
+| `SHA256SUMS` | SHA-256 checksums for all binary assets |
 
 Create a release only from a reviewed commit:
 
 ```bash
-git tag -a v0.1.0 -m "NANDuNX v0.1.0"
-git push origin v0.1.0
+git tag -a v0.2.0 -m "NANDuNX v0.2.0"
+git push github v0.2.0
 ```
 
 Do not move or reuse a published version tag. A rerun replaces only assets with
@@ -56,12 +63,13 @@ the same names on the existing release; it does not change the tagged commit.
 
 ## GitHub Actions runner
 
-No self-hosted runner setup is necessary when using the workflow as written.
-The GitHub-hosted `ubuntu-22.04` image provides Docker, `gh` and `rustup`;
-the workflow installs Node 22, Rust 1.90 and Tauri's Linux build dependencies.
-The repository setting must permit GitHub Actions to use a write-capable
-`GITHUB_TOKEN`; the workflow requests only `contents: write` for release
-creation and asset upload.
+No self-hosted runner setup, PAT, or repository secret is necessary. The
+workflow uses GitHub-hosted `ubuntu-22.04` and `windows-2022` images; it
+installs Node 22, Rust 1.90 and Tauri's Linux build dependencies. The publish
+job requests only `contents: write` on its ephemeral `GITHUB_TOKEN` for
+release creation and asset upload. Actions must be enabled for the repository;
+if organization or repository policy blocks hosted runners or write tokens,
+the failed run will report that policy.
 
 For a self-hosted GitHub runner, install the same Linux prerequisites listed
 below and ensure the runner account can execute `docker build` and `docker
