@@ -29,7 +29,7 @@ The interface has three views, currently labeled **Przygotowanie** (Preparation)
 - **Linux desktop:** install the `.deb` package from a project release. The operating system must grant access to the block device; NANDuNX does not run `sudo`.
 - **Linux headless:** a local Web UI can run as a systemd service. It listens only on `127.0.0.1:4321`. Use an SSH tunnel from another computer. See [development and source-build instructions](docs/DEVELOPMENT.md).
 - **Docker / TrueNAS SCALE:** follow the [deployment guide](docs/DOCKER.md). Its configuration passes through exactly one whole target device.
-- **Windows desktop preview:** tagged releases include an unsigned NSIS `.exe` installer with the same three operations and administrator access through UAC. Use it only with an independent backup and a device you are authorized to modify. Broader reader, recovery, signing, and hardware validation remain open; see the [roadmap](ROADMAP.md) and [Windows test report](docs/W5-RAPORT.md).
+- **Windows desktop preview:** tagged releases include an unsigned NSIS `.exe` installer with the same three operations and administrator access through UAC. Use it only with an independent backup and a device you are authorized to modify. Broader reader, recovery, signing, and hardware validation remain open; see the [roadmap](ROADMAP.md) and [Windows test report](docs/W6-RAPORT.md).
 
 The Web UI uploads selected files to a private session directory on the machine running NANDuNX. The desktop edition uses files in their existing locations. Do not put backups or keysets in the project directory, and use only data and devices you are authorized to access.
 

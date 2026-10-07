@@ -26,6 +26,17 @@ The first attempt to package the Windows installer rejected an invalid NSIS
 configuration key before any release asset was made. The corrected key is
 `installMode`; the successful test above used the corrected revision.
 
+## GitHub tag trial
+
+The annotated tag `v0.2.0` was pushed to GitHub on 2026-10-07 and started
+[run 37646973320](https://github.com/brynchess/NANDuNX/actions/runs/37646973320).
+Its Windows job failed immediately in the installer-build step, before an
+asset upload; the dependent publisher therefore cannot create a release. The
+public job metadata exposes only exit code 1, while detailed Actions logs need
+an authenticated GitHub API session. This report deliberately does not claim a
+published `v0.2.0` release until that failure is resolved and a fresh tag run
+has completed.
+
 ## Limits still open
 
 The installer is unsigned. This stage did not test a fresh install,
