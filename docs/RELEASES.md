@@ -63,7 +63,10 @@ the same names on the existing release; it does not change the tagged commit.
 
 ## GitHub Actions runner
 
-No self-hosted runner setup, PAT, or repository secret is necessary. The
+No self-hosted runner setup, PAT, or repository secret is necessary. In
+**Settings → Actions → General → Workflow permissions**, select **Read and
+write permissions** (or use an organization policy that permits an equivalent
+`contents: write` token). The
 workflow uses GitHub-hosted `ubuntu-22.04` and `windows-2022` images; it
 installs Node 22, Rust 1.90 and Tauri's Linux build dependencies. The publish
 job requests only `contents: write` on its ephemeral `GITHUB_TOKEN` for

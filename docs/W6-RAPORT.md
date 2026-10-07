@@ -35,7 +35,8 @@ asset upload; the dependent publisher therefore cannot create a release. The
 public job metadata exposes only exit code 1, while detailed Actions logs need
 an authenticated GitHub API session. This report deliberately does not claim a
 published `v0.2.0` release until that failure is resolved and a fresh tag run
-has completed.
+has completed. A second trial built both artifacts but exposed a publisher
+assumption: `gh release` needs either a checkout or an explicit repository.
 
 The failure was traced to CRLF line endings in the Windows checkout: the
 PowerShell version reader required an LF-only `Cargo.toml` line. Revision
@@ -43,6 +44,14 @@ PowerShell version reader required an LF-only `Cargo.toml` line. Revision
 Its complete isolated Windows build passed on the same server and produced
 `nandunx-0.2.0-windows-x86_64-setup.exe` with SHA-256
 `eb65671c3da76706cfd10e223e5e79189721bf395636bc1446d92ca18ad4ff04`.
+
+The corrected workflow explicitly supplies `--repo "$GITHUB_REPOSITORY"` to
+GitHub CLI. After enabling read/write workflow permissions for the repository,
+[run 37650920207](https://github.com/brynchess/NANDuNX/actions/runs/37650920207)
+passed Linux, Windows, and publisher jobs on 2026-10-07. It created the
+[NANDuNX v0.2.0 release](https://github.com/brynchess/NANDuNX/releases/tag/v0.2.0)
+with the NSIS installer, Debian package, Web/Docker archives, and one checksum
+manifest; GitHub also provides the tag's source archives.
 
 ## Limits still open
 
