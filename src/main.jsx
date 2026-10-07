@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import Titlebar from './Titlebar.jsx';
+import { LOCALE_STORAGE_KEY, initialLocale, locales, localizeLegacyContent } from './i18n.js';
 import './styles.css';
 
 const isTauri = () => '__TAURI_INTERNALS__' in window;
@@ -176,6 +177,7 @@ function FileCard({ label, hint, kind, artifact, setArtifact, setError }) {
 }
 
 function App() {
+  const [locale, setLocale] = useState(initialLocale);
   const [mode, setMode] = useState('restore_and_expand_user');
   const [stage, setStage] = useState(0);
   const [planning, setPlanning] = useState(false);
@@ -203,6 +205,16 @@ function App() {
   const editionNames = { windows: 'Windows', linux: 'Linux', docker: 'Docker', web: 'Web' };
   const windowsDesktop = isTauri() && (runtime?.edition === 'windows' || (!runtime && navigator.platform.startsWith('Win')));
   const logEvent = (message, type = 'info') => setSessionLog((entries) => [...entries.slice(-99), { id: crypto.randomUUID(), time: new Date().toLocaleTimeString('pl-PL'), message, type }]);
+
+  useEffect(() => {
+    const root = document.getElementById('root');
+    document.documentElement.lang = locale;
+    try { window.localStorage.setItem(LOCALE_STORAGE_KEY, locale); } catch { /* Storage is optional. */ }
+    localizeLegacyContent(root, locale);
+    const observer = new MutationObserver(() => localizeLegacyContent(root, locale));
+    observer.observe(root, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, [locale]);
 
   useEffect(() => {
     async function loadRuntime() {
@@ -468,7 +480,8 @@ function App() {
           <button type="button" className={stage === 1 ? 'step active' : 'step'} onClick={() => setStage(1)} disabled={!plan || running}><span>02</span><span>Plan i kontrola<small>Sprawdź przed zapisem</small></span></button>
           <button type="button" className={stage === 2 ? 'step active' : 'step'} onClick={() => setStage(2)} disabled={!restoreOperation && !startingOperation}><span>03</span><span>Wykonanie<small>Postęp i wynik</small></span></button>
         </nav>
-        <div className="sidebar-bottom"><span className="runtime-dot" />{runtime ? `${editionNames[runtime.edition] || 'Web'} · v${runtime.app_version}` : isTauri() ? 'Desktop · sprawdzanie wersji' : 'Web · sprawdzanie wersji'}<small>Silnik {runtime?.engine_version || '—'}</small></div>
+        <div className="language-picker"><label htmlFor="language">Language</label><select id="language" value={locale} onChange={(event) => setLocale(event.target.value)} disabled={running}>{Object.entries(locales).map(([code, details]) => <option key={code} value={code}>{details.label}</option>)}</select></div>
+        <div className="sidebar-bottom"><span className="runtime-dot" />{runtime ? `${editionNames[runtime.edition] || 'Web'} · v${runtime.app_version}` : isTauri() ? 'Desktop · checking version' : 'Web · checking version'}<small>Engine {runtime?.engine_version || '—'}</small></div>
       </aside>
       <div className="workspace">
         <header className="topbar"><div><span className="eyebrow">OPERACJA NA NOŚNIKU</span><h1>{stage === 0 ? 'Przygotowanie' : stage === 1 ? 'Plan i kontrola' : 'Wykonanie'}</h1><p>{stage === 0 ? 'Wybierz sposób pracy, własne pliki i urządzenie docelowe.' : stage === 1 ? 'Sprawdź plan i wykonaj kontrolę odczytową przed zapisem.' : 'Tu zobaczysz postęp, wynik i możliwość anulowania.'}</p></div><span className="edition-badge">{runtime ? `${editionNames[runtime.edition] || 'Web'} · v${runtime.app_version}` : isTauri() ? 'Desktop' : 'Web'}</span></header>

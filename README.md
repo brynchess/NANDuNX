@@ -22,7 +22,7 @@ NANDuNX accepts a single RAWNAND file or a split backup. It also recognizes an e
 4. Type the full target-device path to confirm the write. NANDuNX repeats its checks immediately before starting.
 5. Watch progress and leave the device connected until the operation ends. Cancellation takes effect at safe boundaries before the final metadata commit.
 
-The interface has three views, currently labeled **Przygotowanie** (Preparation), **Plan i kontrola** (Plan and checks), and **Wykonanie** (Execution). If a write is interrupted, inspect the report and device before trying again. Use your retained backup for recovery. Check the resulting data on the console after completion.
+The interface defaults to English and includes Polish as a selectable, remembered language. Its translations are isolated from write logic so additional languages can be added without changing the NAND workflow. The three views are **Preparation**, **Plan and checks**, and **Execution**. If a write is interrupted, inspect the report and device before trying again. Use your retained backup for recovery. Check the resulting data on the console after completion.
 
 ## Editions and installation
 

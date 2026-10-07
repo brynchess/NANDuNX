@@ -111,6 +111,9 @@ font-size:11px}
 display:block;
 color:#788b99;
 padding:7px 0 0 14px}
+.language-picker{margin-top:auto;padding:16px 10px 0;display:grid;gap:6px;font-size:11px;color:#9aabb7}
+.language-picker select{width:100%;padding:6px 8px;font-size:11px}
+.language-picker+.sidebar-bottom{margin-top:16px}
 .runtime-dot{
 display:inline-block;
 width:7px;

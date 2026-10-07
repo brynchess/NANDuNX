@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "NANDuNX",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "identifier": "io.github.brynchess.nandunx",
   "build": {
     "beforeDevCommand": "npm run dev:web",
@@ -28,7 +28,7 @@
     "targets": ["deb"],
     "publisher": "NANDuNX contributors",
     "category": "Utility",
-    "shortDescription": "Odtwarzanie backupu NAND Nintendo Switch i rozszerzanie USER.",
-    "longDescription": "Lokalna aplikacja dla Linuksa do odtwarzania własnego backupu NAND Nintendo Switch, odtwarzania z rozszerzeniem USER oraz resize in-place. Zapis wymaga pełnego preflightu i potwierdzenia urządzenia."
+    "shortDescription": "Restore Nintendo Switch NAND backups and expand USER.",
+    "longDescription": "A local Linux application for restoring your own Nintendo Switch NAND backup, restoring with USER expansion, and expanding USER in place. Writing requires full preflight and target-device confirmation."
   }
 }
