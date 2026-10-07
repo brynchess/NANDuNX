@@ -37,6 +37,13 @@ an authenticated GitHub API session. This report deliberately does not claim a
 published `v0.2.0` release until that failure is resolved and a fresh tag run
 has completed.
 
+The failure was traced to CRLF line endings in the Windows checkout: the
+PowerShell version reader required an LF-only `Cargo.toml` line. Revision
+`58e2982d5a6ae47056be8e32f043e331eaf3b0e5` accepts both line-ending formats.
+Its complete isolated Windows build passed on the same server and produced
+`nandunx-0.2.0-windows-x86_64-setup.exe` with SHA-256
+`eb65671c3da76706cfd10e223e5e79189721bf395636bc1446d92ca18ad4ff04`.
+
 ## Limits still open
 
 The installer is unsigned. This stage did not test a fresh install,
