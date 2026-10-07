@@ -9,6 +9,9 @@ param(
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
+$repositoryRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
+Set-Location $repositoryRoot
+
 function Invoke-Checked {
     param([string]$Name, [string[]]$Arguments)
 
