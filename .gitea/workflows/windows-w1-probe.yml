@@ -1,0 +1,33 @@
+name: Windows W1 probe
+
+on:
+  push:
+    branches: [windows]
+    paths:
+      - .gitea/workflows/windows-w1-probe.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  compile:
+    runs-on: nandunx-release-windows
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ensure pinned Rust toolchain and rustfmt
+        shell: powershell
+        run: |
+          $env:Path = "$env:USERPROFILE\.cargo\bin;" + [Environment]::GetEnvironmentVariable('Path', 'Machine') + ';' + [Environment]::GetEnvironmentVariable('Path', 'User') + ';' + $env:Path
+          rustup toolchain install 1.90.0 --profile minimal
+          rustup component add rustfmt --toolchain 1.90.0
+          rustup default 1.90.0
+      - name: Compile and test
+        shell: powershell
+        run: ./scripts/windows/w1-ci-probe.ps1
+      - name: Transport report artifact
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows-w1-report
+          path: w1-ci-report.txt

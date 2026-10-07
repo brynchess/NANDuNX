@@ -1,0 +1,22 @@
+.git/
+node_modules/
+target/
+dist/
+/release/
+
+# Local configuration can contain the selected physical device and must not
+# become part of an image build context.
+.env
+.env.*
+!.env.example
+
+# Never send a backup or key material to a Docker daemon as build context.
+*.keys
+keys.dat
+prod.keys
+title.keys
+*.rawnand.bin
+*.rawnand.*
+BOOT0
+BOOT1
+rawnand.bin

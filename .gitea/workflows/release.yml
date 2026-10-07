@@ -1,0 +1,33 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  releases: write
+
+jobs:
+  release:
+    # This label deliberately targets a dedicated, trusted host runner. It
+    # needs Docker to build the image and the desktop build dependencies.
+    runs-on: nandunx-release-linux
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify runner prerequisites
+        run: |
+          node --version
+          cargo --version
+          docker version
+          curl --version
+          python3 --version
+      - name: Build release assets
+        run: scripts/release/build-artifacts.sh "${GITHUB_REF_NAME}"
+      - name: Create or update Gitea release
+        env:
+          GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}
+        run: scripts/release/publish-gitea.sh "${GITHUB_REF_NAME}"

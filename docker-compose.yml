@@ -1,0 +1,50 @@
+name: nandunx
+
+services:
+  nandunx-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${NANDUNX_IMAGE:-nandunx-web}:${NANDUNX_TAG:-local}
+    restart: unless-stopped
+
+    # NANDuNX deliberately listens only on loopback. Host networking keeps that
+    # boundary at the host rather than silently publishing an unauthenticated
+    # destructive web UI on the LAN.
+    network_mode: host
+    environment:
+      NANDUNX_BIND: ${NANDUNX_BIND:-127.0.0.1:4321}
+      NANDUNX_WEB_ROOT: /opt/nandunx/web
+      NANDUNX_ARTIFACT_DIR: /var/lib/nandunx/uploads
+      NANDUNX_LAST_RUN_LOG: /var/lib/nandunx/last-run.log
+      NANDUNX_MOUNTINFO_PATH: /run/nandunx/host-mountinfo
+
+    # Device cgroup access is limited to this one whole target. NANDuNX never
+    # needs --privileged or extra Linux capabilities to open it.
+    devices:
+      - ${NANDUNX_DEVICE_PATH:?Set NANDUNX_DEVICE_PATH in .env}:${NANDUNX_DEVICE_PATH:?Set NANDUNX_DEVICE_PATH in .env}:rwm
+    volumes:
+      - type: bind
+        source: ${NANDUNX_STATE_DIR:?Set NANDUNX_STATE_DIR in .env}
+        target: /var/lib/nandunx
+      - type: bind
+        source: ${NANDUNX_HOST_MOUNTINFO:-/proc/1/mountinfo}
+        target: /run/nandunx/host-mountinfo
+        read_only: true
+      - type: bind
+        source: /sys
+        target: /sys
+        read_only: true
+
+    # The service runs as root only because the selected device node normally
+    # belongs to root. It has no ambient Linux capabilities and a read-only
+    # root filesystem.
+    user: "0:0"
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m,mode=1777
+    init: true

@@ -1,0 +1,33 @@
+name: Windows W1 probe
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  compile:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - shell: pwsh
+        run: rustup toolchain install 1.90.0 --profile minimal
+      - shell: pwsh
+        run: rustup component add rustfmt --toolchain 1.90.0
+      - shell: pwsh
+        run: rustup default 1.90.0
+      - name: Compile and test
+        shell: pwsh
+        run: ./scripts/windows/w1-ci-probe.ps1
+      - name: Transport report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-w1-report
+          path: w1-ci-report.txt
+          if-no-files-found: error

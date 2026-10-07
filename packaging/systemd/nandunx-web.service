@@ -1,0 +1,27 @@
+[Unit]
+Description=NANDuNX local headless web interface
+After=network.target
+
+[Service]
+Type=simple
+Environment=NANDUNX_BIND=127.0.0.1:4321
+Environment=NANDUNX_WEB_ROOT=/usr/local/share/nandunx/web
+Environment=NANDUNX_ARTIFACT_DIR=/var/lib/nandunx-web/uploads
+Environment=NANDUNX_LAST_RUN_LOG=/var/lib/nandunx-web/last-run.log
+ExecStart=/usr/local/lib/nandunx/nandunx-web
+Restart=on-failure
+RestartSec=2
+UMask=0077
+StateDirectory=nandunx-web
+StateDirectoryMode=0700
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+NoNewPrivileges=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,50 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install Linux build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends \
+            build-essential \
+            pkg-config \
+            libssl-dev \
+            libgtk-3-dev \
+            libwebkit2gtk-4.1-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev
+      - name: Install Rust toolchain
+        run: |
+          rustup toolchain install 1.90.0 --profile minimal
+          rustup component add rustfmt --toolchain 1.90.0
+          rustup default 1.90.0
+      - name: Build release assets
+        run: scripts/release/build-artifacts.sh "${GITHUB_REF_NAME}"
+      - name: Create or update GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "${GITHUB_REF_NAME}" > /dev/null 2>&1; then
+            gh release upload "${GITHUB_REF_NAME}" release/* --clobber
+          else
+            gh release create "${GITHUB_REF_NAME}" release/* \
+              --title "NANDuNX ${GITHUB_REF_NAME}" \
+              --generate-notes
+          fi

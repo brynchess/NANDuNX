@@ -1,0 +1,34 @@
+# JavaScript
+node_modules/
+dist/
+
+# Rust
+target/
+/release/
+logs/
+*.log
+
+# Tauri bundles and local configuration
+src-tauri/gen/
+*.deb
+*.AppImage
+
+# Sensitive Nintendo Switch material and backups
+*.keys
+keys.dat
+prod.keys
+title.keys
+*.rawnand.bin
+*.rawnand.*
+BOOT0
+BOOT1
+rawnand.bin
+rawnand.bin.*
+*.rawnand.bin.*
+
+# Local editor / environment state
+.env
+.env.*
+!.env.example
+.idea/
+.vscode/
