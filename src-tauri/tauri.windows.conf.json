@@ -21,7 +21,7 @@
         "silent": true
       },
       "nsis": {
-        "installerMode": "currentUser",
+        "installMode": "currentUser",
         "displayLanguageSelector": false
       }
     }
