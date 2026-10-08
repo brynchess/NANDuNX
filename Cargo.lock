@@ -1963,7 +1963,7 @@ dependencies = [
 
 [[package]]
 name = "nandunx-core"
-version = "0.2.2"
+version = "0.2.3"
 dependencies = [
  "aes",
  "crc32fast",
@@ -1975,7 +1975,7 @@ dependencies = [
 
 [[package]]
 name = "nandunx-desktop"
-version = "0.2.2"
+version = "0.2.3"
 dependencies = [
  "nandunx-core",
  "serde",
@@ -1988,7 +1988,7 @@ dependencies = [
 
 [[package]]
 name = "nandunx-web"
-version = "0.2.2"
+version = "0.2.3"
 dependencies = [
  "axum",
  "futures-util",

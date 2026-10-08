@@ -959,7 +959,7 @@ mod tests {
         );
         assert_eq!(
             error.to_string(),
-            "Nie można utrzymać wyłącznej ochrony dysku i jego woluminów."
+            "Exclusive protection of the disk and its volumes could not be maintained."
         );
         let detail = format!("{error:?}");
         assert!(detail.contains("blokada woluminu"));

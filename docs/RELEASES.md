@@ -9,8 +9,8 @@ The tag must exactly match the version in root `Cargo.toml`, `package.json`,
 and `src-tauri/tauri.conf.json`. The release build rejects a mismatch.
 
 ```bash
-git tag -a v0.2.2 -m "NANDuNX v0.2.2"
-git push github v0.2.2
+git tag -a v0.2.3 -m "NANDuNX v0.2.3"
+git push github v0.2.3
 ```
 
 Do not move or reuse a published version tag. Rerunning a workflow can replace
