@@ -55,7 +55,7 @@ const en = {
   task: 'TASK', targetValue: 'Target: {target}', taskNotStarted: 'The task has not started yet.',
   recheckingTarget: 'The target is being checked and write authorization is being repeated. Wait for the result.',
   waitingProgress: 'Waiting for the first progress read…', from: '{processed} of {total}',
-  writeVerified: 'Writing and verification complete.', canceledSafely: 'Operation canceled at a safe boundary.', taskStopped: 'Task stopped',
+  writeVerified: 'Writing and verification complete.', verifiedBytes: 'verified {value}', canceledSafely: 'Operation canceled at a safe boundary.', taskStopped: 'Task stopped',
   cancelRequested: 'Cancellation requested', cancelTask: 'Cancel task', cancellationSafety: 'Cancellation occurs at a safe boundary before the final commit. Do not disconnect the device until the task has ended.',
   doNotClose: 'Do not close the window while writing.', currentTask: 'CURRENT TASK', running: 'Running', completed: 'Completed', failed: 'Failed', idle: 'Idle',
   noActiveTask: 'No active task', openExecution: 'Open Execution to view the result.', targetCheck: 'Checking target…', taskStatusHint: 'Once you start an operation, its status will appear here.',
@@ -79,6 +79,8 @@ const pl = {
 };
 
 const translations = { en, pl };
+
+pl.verifiedBytes = 'zweryfikowano {value}';
 
 export function translate(locale, key, values = {}) {
   const message = key.split('.').reduce((value, part) => value?.[part], translations[locale] ?? en)

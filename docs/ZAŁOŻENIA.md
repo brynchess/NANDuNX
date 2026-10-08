@@ -27,7 +27,7 @@ Out of the initial Linux scope: obtaining keys, unrelated console-data modificat
 
 The proposed first Windows release targets Windows 11 x64 with all three Tauri desktop operations, one EXE elevated by system UAC, and an NSIS installer. GPT/FAT/AES-XTS and the frontend remain shared. Win32 needs its own device-safety backend; Linux mountinfo and `fs2` locking are not substitutes. Windows is GUI only: no Windows Web UI, headless package, or service. Tauri renders the shared frontend locally without a NANDuNX HTTP server.
 
-The initial Windows device profile requires 512 B logical sectors. It excludes 4Kn, BOOT0/BOOT1 writes, Windows 10, and ARM64. Native GitHub and Gitea Windows runners must build without real backups, keys, or access to user devices. See [WINDOWS.md](WINDOWS.md) for the design and [ROADMAP.md](../ROADMAP.md) for the sole current stage status.
+The initial Windows device profile requires 512 B logical sectors. It excludes 4Kn, BOOT0/BOOT1 writes, Windows 10, and ARM64. Native GitHub Windows runners must build without real backups, keys, or access to user devices. See [WINDOWS.md](WINDOWS.md) for the design and [ROADMAP.md](../ROADMAP.md) for the sole current stage status.
 
 W1 validated MSVC compilation/tests, VHDX lock probes, and a downloadable Gitea artifact. W2 separated Linux and Windows device boundaries. W3 added read-only Win32 enumeration, 512/512e geometry, PnP/serial/GPT snapshots, and volume mapping. Preflight rejects missing durable IDs, unknown layout, 4Kn, LDM/Storage Spaces/RAID, system/pagefile disks, and source files on the target. A VHDX missing an ID was rejected as intended. W4 added protected RAW, source/keyset sessions, and an UAC/IPC helper; the helper was later replaced with a single administrator Tauri process. W5 repeats preflight and reports progress, cancellation, and results in the current session. One user-confirmed Switch restore-and-expand test passed; broader physical-reader validation remains open.
 
@@ -41,8 +41,7 @@ ephemeral repository `GITHUB_TOKEN`; no personal token or repository secret
 is stored for release creation. It attaches the `.deb`, Windows NSIS `.exe`,
 Linux Web/Docker archives, and a combined checksum manifest. GitHub provides
 the source ZIP and tarball for the tag. The NSIS installer downloads WebView2
-when required. Signing, fresh-install coverage, and a Gitea Windows release
-workflow are separate follow-up work.
+when required. Signing and fresh-install coverage are separate follow-up work.
 
 ## Implemented preflight and session UI
 

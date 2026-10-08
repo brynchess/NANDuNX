@@ -105,22 +105,22 @@ pub enum WindowsPreflightError {
 impl std::fmt::Display for WindowsPreflightError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let message = match self {
-            Self::Io => "Nie można odczytać pełnej mapy dysków i woluminów Windows.",
-            Self::MissingIdentity => "Dysk nie ma jednoznacznej tożsamości sprzętowej.",
-            Self::Changed => "Dysk zmienił się od wybrania go na liście.",
-            Self::ChangedAt { .. } => "Dysk zmienił się od wybrania go na liście.",
-            Self::UnsupportedGeometry => "Dysk nie ma obsługiwanej geometrii 512/512e.",
+            Self::Io => "Could not read the complete Windows disk and volume map.",
+            Self::MissingIdentity => "The disk does not have an unambiguous hardware identity.",
+            Self::Changed => "The disk changed after it was selected from the list.",
+            Self::ChangedAt { .. } => "The disk changed after it was selected from the list.",
+            Self::UnsupportedGeometry => "The disk does not have supported 512/512e geometry.",
             Self::UnsupportedDiskLayout => {
-                "Dysk ma nieobsługiwany układ LDM, RAID albo Storage Spaces."
+                "The disk has an unsupported LDM, RAID, or Storage Spaces layout."
             }
-            Self::TargetReadOnly => "Dysk docelowy jest tylko do odczytu.",
-            Self::SourceOnTarget => "Źródło lub plik programu leży na dysku docelowym.",
-            Self::SystemDisk => "Dysk zawiera system Windows.",
-            Self::PagefileDisk => "Dysk zawiera plik stronicowania lub nie można tego wykluczyć.",
-            Self::AmbiguousVolume => "Nie można jednoznacznie przypisać woluminu do dysku.",
-            Self::ConfirmationMismatch => "Potwierdzenie musi być dokładną, pełną ścieżką dysku.",
+            Self::TargetReadOnly => "The target disk is read-only.",
+            Self::SourceOnTarget => "The source or application file is on the target disk.",
+            Self::SystemDisk => "The disk contains the Windows system.",
+            Self::PagefileDisk => "The disk contains a page file, or that cannot be ruled out.",
+            Self::AmbiguousVolume => "A volume cannot be unambiguously assigned to the disk.",
+            Self::ConfirmationMismatch => "The confirmation must be the exact, full disk path.",
             Self::CannotProtect { .. } => {
-                "Nie można utrzymać wyłącznej ochrony dysku i jego woluminów."
+                "Exclusive protection of the disk and its volumes could not be maintained."
             }
         };
         f.write_str(message)
